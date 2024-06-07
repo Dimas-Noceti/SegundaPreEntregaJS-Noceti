@@ -114,38 +114,63 @@ do {
 } while (agregarProducto);
 
 
-let finalizarCompra = confirm("Desea finalizar su compra?");
+let mensajeDespedida = "";
+let calculoCantidadTotal = 0;
+let calculoPrecioTotal = 0;
+
+do {
+    const eliminarObjetoVacioDelArray = (cantidadDelUsuario) => {          // Elimina los objetos vacios de un array. Asi en el mensaje de resumen de compra, solo se muestra lo que compro.         
+        productosAgregadosPorElUsario.forEach((objeto, index) => {
+            if (objeto.cantidadDelUsuario == cantidadDelUsuario) {
+                productosAgregadosPorElUsario.splice(index, 1);
+            }
+        })
+    }
+    eliminarObjetoVacioDelArray(0);
+    eliminarObjetoVacioDelArray(0);
+
+    calculoPrecioTotal = 0;                                                 // Calcula el precio total de TODOS los productos
+    productosAgregadosPorElUsario.forEach((precios) => {
+    calculoPrecioTotal += precios.precioDelUsario
+    })
+        
+    calculoCantidadTotal = 0;                                                 // Calcula la cantidad total de TODOS los productos
+    productosAgregadosPorElUsario.forEach((cantidades) => {
+        calculoCantidadTotal += cantidades.cantidadDelUsuario
+    })
 
 
-if (finalizarCompra){
-        const eliminarObjetoVacioDelArray = (cantidadDelUsuario) => {          // Elimina los objetos vacios de un array. Asi en el mensaje de resumen de compra, solo se muestra lo que compro.         
+    mensajeDespedida = "Resumen de compra: \n";
+    productosAgregadosPorElUsario.forEach((itemsUsuario) => {                // Un mensaje con el resumen de compra del ususario
+    mensajeDespedida += itemsUsuario.cantidadDelUsuario + " " + itemsUsuario.productoDelUsario + ": " + itemsUsuario.precioDelUsario + "$" + "\n";
+    }) 
+    eliminarAlgoDelCarrito = confirm(mensajeDespedida + "En total serian " + calculoCantidadTotal + " productos = " + calculoPrecioTotal + "$" + "\nDesea eliminar algo del carrito?");
+
+    if (eliminarAlgoDelCarrito) {
+        let productoEliminar = prompt("Que producto desea eliminar?");
+        productoEliminar = productoEliminar.toLowerCase(productoEliminar);
+
+        const nombresEliminarProductosMinusc = productosAgregadosPorElUsario.map((productosNombres) => productosNombres.productoDelUsario);
+        convertirNombreEnMinusculas(nombresEliminarProductosMinusc);
+
+        const eliminarProductoQueElUsuarioEliga = (productoDelUsario) => {          // Eliminar algun producto que el usuario quiera.
             productosAgregadosPorElUsario.forEach((objeto, index) => {
-                if (objeto.cantidadDelUsuario == cantidadDelUsuario) {
+                if (objeto.productoDelUsario == productoDelUsario) {
                     productosAgregadosPorElUsario.splice(index, 1);
                 }
             })
         }
-        eliminarObjetoVacioDelArray(0);
-        eliminarObjetoVacioDelArray(0);
-
-        let calculoPrecioTotal = 0;                                                 // Calcula el precio total de TODOS los productos
-        productosAgregadosPorElUsario.forEach((precios) => {
-        calculoPrecioTotal += precios.precioDelUsario
-        })
-        
-        let calculoCantidadTotal = 0;                                                 // Calcula la cantidad total de TODOS los productos
-        productosAgregadosPorElUsario.forEach((cantidades) => {
-            calculoCantidadTotal += cantidades.cantidadDelUsuario
-        })
-
-        let mensajeDespedida = "Resumen de compra: \n";
-        productosAgregadosPorElUsario.forEach((itemsUsuario) => {                // Un mensaje con el resumen de compra del ususario
-            mensajeDespedida += itemsUsuario.cantidadDelUsuario + " " + itemsUsuario.productoDelUsario + ": " + itemsUsuario.precioDelUsario + "$" + "\n";
-        }) 
-         const eliminarAlgoDelCarrito = confirm(mensajeDespedida + "En total serian " + calculoCantidadTotal + " productos = " + calculoPrecioTotal + "$" + "\nDesea eliminar algo del carrito?")  // Esto de que elimine algo del carrito lo hare para la proxima entrega jajaja
+        eliminarProductoQueElUsuarioEliga(productoEliminar)
     }
+} while (eliminarAlgoDelCarrito);
+
+
+let finalizarCompra = confirm("Desea finalizar su compra?");
+if (finalizarCompra){
+    alert(mensajeDespedida + "En total serian " + calculoCantidadTotal + " productos = " + calculoPrecioTotal + "$")
+}
 else{
-    alert("Aqui nos despedimos.")
+alert("Aqui nos despedimos.")
 }
 
 
